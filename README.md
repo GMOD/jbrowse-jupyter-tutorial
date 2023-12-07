@@ -1,8 +1,16 @@
 # jbrowse-jupyter tutorial - locally with JupyterLab
 
+## Introduction
+
 jbrowse-jupyter is a method for running JBrowse 2 in a Jupyter notebook. In this
 tutorial, we will look at how to use it inside JupyterLab (run locally on your
 computer), and to load a dynamically generated bigwig track.
+
+## Pre-requisites
+
+- Python/pip installed
+- Terminal
+- Nodejs installed (used to launch a temporary HTTP server)
 
 ## Step 1. Create a python virtual env
 
@@ -19,22 +27,20 @@ source bin/activate
 Now when you run pip, it is aliased to "bin/pip" that installs locally. Re-run
 `source bin/activate` whenever you are revisiting this project folder
 
-## Step 2. Install and launch jupyter lab
+## Step 2. Install and launch Jupyter Lab
 
-Following instructions from https://jupyter.org/install
-
-I run
+I run the following commands in the `project` folder in the terminal
 
 ```bash
 pip install jupyterlab
 jupyter lab
 ```
 
-A new browser window will be launched
+A new browser window will be launched as a result
 
 Then launch a new notebook
 
-![](k1.png)
+![](img/k1.png)
 
 ## Step 3. Install jbrowse-jupyter in the notebook
 
@@ -149,3 +155,11 @@ hg38.set_default_session(['randomscores'], False)
 hg38.set_location("1:1..100,000")
 launch(hg38.get_config(), port=8005)
 ```
+
+## Result
+
+The tutorial.ipynb contains the results of running this script
+
+## Credit
+
+Big thanks to @carolinebridge-oicr for doing all the work!
