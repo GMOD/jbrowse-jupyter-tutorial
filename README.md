@@ -104,7 +104,7 @@ Enter:
 
 ```python
 ## reference the file, being served by our above npx serve command
-hg38.add_track("http://localhost:3000/encff303qsj.bigwig", track_id="mybigwig", overwrite=true)
+hg38.add_track("http://localhost:3000/ENCFF303QSJ.bigWig", track_id="mybigwig", overwrite=true)
 
 ## open up the track by default by making it part of the default session
 hg38.set_default_session(['mybigwig'], false)
@@ -116,18 +116,31 @@ hg38.set_location("10:27,369,085..27,494,654")
 launch(hg38.get_config(), port=8003)
 ```
 
-## Step 6. Dynamically create a bigwig in python, write to file, then load it as a track
+## Step 6. Dynamically create a bigwig in python, write to file on disk
+
+Install pandas and bioframe
+
+In a notebook cell run
+
+```
+!pip install pandas
+!pip install bioframe
+```
+
+In another notebook cell run
 
 ```python
 import pandas as pd
 import bioframe
 import random
+import numpy as np
 
+## generate some random poisson distributed data on 'chr1' only, as a data frame
 def makedf(n,windowSize):
     chroms = ["chr1"] * n
     starts = range(0, n * 10, windowSize)
     ends = [x + windowSize for x in starts]
-    scores = random.choices(range(1, 101), k=n)
+    scores = np.random.poisson(100, n)
 
     df = pd.DataFrame({
         'chrom': chroms,
@@ -138,23 +151,34 @@ def makedf(n,windowSize):
 
     return df
 
-df=makedf(10000,10)
-print(df)
+## write the data frame to a bigwig file
+df=makedf(24_000_000,1000)
 chromsizes = bioframe.fetch_chromsizes('hg38')
 bioframe.to_bigwig(df,chromsizes,"randomScores.bw")
 ```
 
-## Add our new track, and re-launch an instance
+The final step uses bioframe to write out the result to a bigwig file on disk,
+in the `project` folder
 
-In a new Jupyter Lab cell
+## Step 7. Add our new BigWig file as a track, and re-launch the instance
+
+In a new notebook cell
 
 ```python
-hg38.add_track("http://localhost:3000/randomScores.bw", track_id="randomscores", overwrite=True)
+hg38.add_track("http://localhost:3000/randomScores2.bw", track_id="randomscores", overwrite=True)
 
 hg38.set_default_session(['randomscores'], False)
-hg38.set_location("1:1..100,000")
+hg38.set_location("1:1,000,000..20,000,000")
 launch(hg38.get_config(), port=8005)
 ```
+
+This produces a new instance with our random values from data frame
+
+![](img/k2.png)
+
+The data at this zoom level (showing millions of bp) is summarized so light blue
+is max in the window, dark blue is min in the window, and normal blue is mean.
+This can help identify peaks, or troughs.
 
 ## Result
 
@@ -162,4 +186,21 @@ The tutorial.ipynb contains the results of running this script
 
 ## Credit
 
-Big thanks to @carolinebridge-oicr for doing all the work!
+Big thanks to [@carolinebridge-oicr](https://github.com/carolinebridge-oicr) for
+code samples, bug fixing, and investigation!
+
+## Versions
+
+We published updated jbrowse-jupyter and dash_jbrowse packages to aid the
+processes in this article
+
+## Footnote
+
+This assumes running jupyter lab locally. There are other ways that jupyter
+notebooks are run, we will try to make separate tutorials to address these! You
+can try to adapt this tutorial if you would like.
+
+However, this tutorial specifically is geared towards running on your local
+machine (as opposed to e.g. Google CoLab cloud) so that we can launch the HTTP
+server with `npx serve`. Note that you can use your own HTTP server of choice
+instead of `npx serve` if it's convenient.
