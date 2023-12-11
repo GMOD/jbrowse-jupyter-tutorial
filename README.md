@@ -11,6 +11,8 @@ computer), and to load a dynamically generated bigwig track.
 - Python/pip installed
 - Terminal
 - Nodejs installed (used to launch a temporary HTTP server)
+- bedGraphToBigWig in your PATH (download
+  https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 
 ## Step 1. Create a python virtual env
 
@@ -104,10 +106,10 @@ Enter:
 
 ```python
 ## reference the file, being served by our above npx serve command
-hg38.add_track("http://localhost:3000/ENCFF303QSJ.bigWig", track_id="mybigwig", overwrite=true)
+hg38.add_track("http://localhost:3000/ENCFF303QSJ.bigWig", track_id="mybigwig", overwrite=True)
 
 ## open up the track by default by making it part of the default session
-hg38.set_default_session(['mybigwig'], false)
+hg38.set_default_session(['mybigwig'], False)
 
 ## interesting region
 hg38.set_location("10:27,369,085..27,494,654")
@@ -158,7 +160,8 @@ bioframe.to_bigwig(df,chromsizes,"randomScores.bw")
 ```
 
 The final step uses bioframe to write out the result to a bigwig file on disk,
-in the `project` folder
+in the `project` folder. This step invokes `bedGraphToBigWig` so make sure that
+is in your $PATH (https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 
 ## Step 7. Add our new BigWig file as a track, and re-launch the instance
 
