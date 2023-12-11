@@ -168,7 +168,7 @@ is in your $PATH (https://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 In a new notebook cell
 
 ```python
-hg38.add_track("http://localhost:3000/randomScores2.bw", track_id="randomscores", overwrite=True)
+hg38.add_track("http://localhost:3000/randomScores.bw", track_id="randomscores", overwrite=True)
 
 hg38.set_default_session(['randomscores'], False)
 hg38.set_location("1:1,000,000..20,000,000")
